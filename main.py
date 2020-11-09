@@ -10,10 +10,10 @@ def read_input_data() -> (str, str, int):
     k - natural number
     returns (alpha, x, k)"""
 
-    # text = input()
+    text = input()
 
-    with open('regexparser/input.txt', 'r') as f:
-        text = f.read()
+    # with open('regexparser/input.txt', 'r') as f:
+    #     text = f.read()
 
     alpha, x, k = text.split()
     k = int(k)
