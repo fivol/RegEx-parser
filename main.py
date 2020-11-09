@@ -1,4 +1,6 @@
-from parser import RegExParser
+from regexparser.constants import WRONG_ANSWER_MESSAGE, ERROR_MESSAGE
+from regexparser.exceptions import IncorrectRegularExpression
+from regexparser.parser import RegExParser
 
 
 def read_input_data() -> (str, str, int):
@@ -10,7 +12,7 @@ def read_input_data() -> (str, str, int):
 
     # text = input()
 
-    with open('input.txt', 'r') as f:
+    with open('regexparser/input.txt', 'r') as f:
         text = f.read()
 
     alpha, x, k = text.split()
@@ -23,10 +25,15 @@ def read_input_data() -> (str, str, int):
 def solution():
     alpha, x, k = read_input_data()
 
-    parser = RegExParser(alpha)
-    length = parser.get_min_length_with_substring(x, k)
-
-    print(length)
+    try:
+        parser = RegExParser(alpha)
+        length = parser.get_min_length_with_substring(x, k)
+        if length is None:
+            print(WRONG_ANSWER_MESSAGE)
+        else:
+            print(length)
+    except IncorrectRegularExpression:
+        print(ERROR_MESSAGE)
 
 
 if __name__ == '__main__':

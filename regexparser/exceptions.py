@@ -1,0 +1,4 @@
+
+
+class IncorrectRegularExpression(Exception):
+    pass

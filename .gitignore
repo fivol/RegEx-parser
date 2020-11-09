@@ -2,3 +2,5 @@ envirenment/
 .idea/
 *.pyc
 *.bin
+.pytest_cache/
+.coverage

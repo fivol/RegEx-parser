@@ -1,2 +1,0 @@
-NEUTRAL_ELEMENT = '1'
-EPSILON = ''

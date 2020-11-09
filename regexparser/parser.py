@@ -1,9 +1,8 @@
-from string import ascii_lowercase
-
-from config import REGEX_ALPHABET
-from constants import NEUTRAL_ELEMENT
-from regular_expression import RegExOperation, RegEx
-from state_machine import StateMachine
+from regexparser.config import REGEX_ALPHABET
+from regexparser.constants import NEUTRAL_ELEMENT
+from regexparser.exceptions import IncorrectRegularExpression
+from regexparser.regular_expression import RegEx
+from regexparser.state_machine import StateMachine
 
 
 class RegExParser:
@@ -30,10 +29,11 @@ class RegExParser:
                 # x_begin - node where sequence of symbol**power begin
                 # n_moved_end - node after sequence of SYMBOL chars
                 distance_before = self.state_machine.graph.distance_from_start(x_begin)
-                distance_after = self.state_machine.graph.distance_to_finite(x_begin)
+                distance_after = self.state_machine.graph.distance_to_finite(n_moves_end)
+                # logger.info('%s, %s, %s, %s', x_begin, n_moves_end, distance_before, distance_after)
 
                 word_length = distance_before + power + distance_after
-                if min_word_length is None or word_length < word_length:
+                if min_word_length is None or word_length < min_word_length:
                     min_word_length = word_length
 
         return min_word_length
@@ -44,16 +44,19 @@ class RegExParser:
         for i, c in enumerate(regex_string):
             if c in cls.alphabet or c == NEUTRAL_ELEMENT:
                 stack.append(RegEx(c))
-            elif c == RegExOperation.PLUS:
+            elif c == '+':
                 ex2 = stack.pop()
                 ex1 = stack.pop()
                 stack.append(ex1 + ex2)
-            elif c == RegExOperation.CONCAT:
+            elif c == '.':
                 ex2 = stack.pop()
                 ex1 = stack.pop()
                 stack.append(ex1 * ex2)
-            elif c == RegExOperation.STAR or c == '∗':
+            elif c in '*∗':
                 ex = stack.pop()
                 stack.append(ex.star())
+
+        if len(stack) != 1:
+            raise IncorrectRegularExpression
 
         return stack[0]
