@@ -1,4 +1,5 @@
 from regexparser.parser import RegExParser
+from regexparser.state_machine import *
 
 
 def string_solution(input_string):
@@ -23,3 +24,28 @@ def test_other_examples():
     assert string_solution('ab.b. c 2') is None
     assert string_solution('b* a 1') is None
     assert string_solution('a b 1') is None
+
+
+def build_ndsm(regex_str):
+    parser = RegExParser(regex_str)
+    return StateMachine(parser.regex)._build_ndsm(parser.regex)
+
+
+def test_dsm():
+    g = build_ndsm('a*')
+    assert len(g.nodes) == g.nodes_pointer
+    assert 4 == g.nodes_pointer
+    assert g.finite_nodes == {1}
+
+    g = build_ndsm('ab.*')
+    assert len(g.nodes) == g.nodes_pointer
+    assert 6 == g.nodes_pointer
+    assert g.finite_nodes == {1}
+
+
+def test_ndsm():
+    assert StateMachine._build_dsm(build_ndsm('b*')).start_node == (0, 1, 2)
+    assert StateMachine._build_dsm(build_ndsm('b*')).start_node == (0, 1, 2)
+    assert len(StateMachine._build_dsm(build_ndsm('b*')).nodes) == 2
+    assert StateMachine._build_dsm(build_ndsm('ab.c+')).start_node == (0, )
+    assert len(StateMachine._build_dsm(build_ndsm('ab.c+*')).nodes) == 4
